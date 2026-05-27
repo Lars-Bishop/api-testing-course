@@ -591,7 +591,7 @@
           "response": []
         },
         {
-          "name": "Get List (invalid auth_api_token)",
+          "name": "Get List (invalid auth_api_key)",
           "event": [
             {
               "listen": "test",
@@ -815,7 +815,7 @@
           "response": []
         },
         {
-          "name": "Update List (invalid auth_api_token)",
+          "name": "Update List (invalid auth_api_key)",
           "event": [
             {
               "listen": "prerequest",
@@ -1002,7 +1002,7 @@
           "response": []
         },
         {
-          "name": "Delete List (invalid auth_api_token)",
+          "name": "Delete List (invalid auth_api_key)",
           "event": [
             {
               "listen": "prerequest",
