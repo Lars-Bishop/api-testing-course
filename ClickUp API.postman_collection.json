@@ -1,0 +1,1164 @@
+{
+  "info": {
+    "_postman_id": "a54e0ba3-a170-45b2-9736-ebab5a2964ae",
+    "name": "ClickUp API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "7069859"
+  },
+  "item": [
+    {
+      "name": "Lists",
+      "item": [
+        {
+          "name": "Get Lists",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{auth_api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{clickup_base_url}}/folder/{{folder_id}}/list",
+              "host": [
+                "{{clickup_base_url}}"
+              ],
+              "path": [
+                "folder",
+                "{{folder_id}}",
+                "list"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Lists (with archived)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "value",
+                  "value": "{{auth_api_key}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{auth_api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{clickup_base_url}}/folder/{{folder_id}}/list?archived=true'",
+              "host": [
+                "{{clickup_base_url}}"
+              ],
+              "path": [
+                "folder",
+                "{{folder_id}}",
+                "list"
+              ],
+              "query": [
+                {
+                  "key": "archived",
+                  "value": "true'"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get lists (invalid folder_id)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const body = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Status code is 401\", function () {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Team not authorized err\", function () {\r",
+                  "    pm.expect(body.err).to.eql(\"Team not authorized\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.environment.set(\"invalid_folder_id\", Date.now() + Math.floor(Math.random() * 1000000));"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{auth_api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{clickup_base_url}}/folder/{{invalid_folder_id}}/list",
+              "host": [
+                "{{clickup_base_url}}"
+              ],
+              "path": [
+                "folder",
+                "{{invalid_folder_id}}",
+                "list"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get lists (invalid auth_api_key)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const body = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Status code is 401\", function () {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Token invalid err\", function () {\r",
+                  "    pm.expect(body.err).to.eql(\"Token invalid\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.request.headers.upsert({\r",
+                  "    key: \"Authorization\",\r",
+                  "    value: \"pk_\" + Date.now()\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{clickup_base_url}}/folder/{{folder_id}}/list",
+              "host": [
+                "{{clickup_base_url}}"
+              ],
+              "path": [
+                "folder",
+                "{{folder_id}}",
+                "list"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create List",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const body = pm.response.json();\r",
+                  "const expectedName = pm.environment.get(\"list_name\");\r",
+                  "\r",
+                  "\r",
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Check list name\", function () {\r",
+                  "    pm.expect(body.name).to.eql(expectedName);\r",
+                  "});\r",
+                  "\r",
+                  "pm.collectionVariables.set(\"list_id\", body.id)\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const listName = \"test_list_\" + Date.now();\r",
+                  "pm.environment.set(\"list_name\", listName);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{auth_api_key}}"
+              },
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "content-type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "\n{\n  \"name\": \"{{list_name}}\"\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{clickup_base_url}}/folder/{{folder_id}}/list",
+              "host": [
+                "{{clickup_base_url}}"
+              ],
+              "path": [
+                "folder",
+                "{{folder_id}}",
+                "list"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create List (req field missing)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const body = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Status code is 400\", function () {\r",
+                  "    pm.response.to.have.status(400);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"List Name Invalid err\", function () {\r",
+                  "    pm.expect(body.err).to.eql(\"List Name Invalid\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{auth_api_key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n{\r\n  \r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{clickup_base_url}}/folder/{{folder_id}}/list",
+              "host": [
+                "{{clickup_base_url}}"
+              ],
+              "path": [
+                "folder",
+                "{{folder_id}}",
+                "list"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create List (invalid folder_id)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const body = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Status code is 401\", function () {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Team not authorized err\", function () {\r",
+                  "    pm.expect(body.err).to.eql(\"Team not authorized\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{auth_api_key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n{\r\n  \"name\": \"Some list name\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{clickup_base_url}}/folder/{{invalid_folder_id}}/list",
+              "host": [
+                "{{clickup_base_url}}"
+              ],
+              "path": [
+                "folder",
+                "{{invalid_folder_id}}",
+                "list"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create List (invalid auth_api_key)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const body = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Status code is 401\", function () {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Token invalid err\", function () {\r",
+                  "    pm.expect(body.err).to.eql(\"Token invalid\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.request.headers.upsert({\r",
+                  "    key: \"Authorization\",\r",
+                  "    value: \"pk_\" + Date.now()\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n{\r\n  \"name\": \"Some list name\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{clickup_base_url}}/folder/{{folder_id}}/list",
+              "host": [
+                "{{clickup_base_url}}"
+              ],
+              "path": [
+                "folder",
+                "{{folder_id}}",
+                "list"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "packages": {},
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{auth_api_key}}"
+              },
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{clickup_base_url}}/list/{{list_id}}",
+              "host": [
+                "{{clickup_base_url}}"
+              ],
+              "path": [
+                "list",
+                "{{list_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List (invalid list_id)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.environment.set(\"invalid_list_id\", Date.now() + Math.floor(Math.random() * 1000000));"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const body = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Status code is 401\", function () {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Team not authorized err\", function () {\r",
+                  "    pm.expect(body.err).to.eql(\"Team not authorized\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{auth_api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{clickup_base_url}}/list/{{invalid_list_id}}",
+              "host": [
+                "{{clickup_base_url}}"
+              ],
+              "path": [
+                "list",
+                "{{invalid_list_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get List (invalid auth_api_token)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const body = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Status code is 401\", function () {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Token invalid err\", function () {\r",
+                  "    pm.expect(body.err).to.eql(\"Token invalid\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.request.headers.upsert({\r",
+                  "    key: \"Authorization\",\r",
+                  "    value: \"pk_\" + Date.now()\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{clickup_base_url}}/list/{{list_id}}",
+              "host": [
+                "{{clickup_base_url}}"
+              ],
+              "path": [
+                "list",
+                "{{list_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update List",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const body = pm.response.json();\r",
+                  "const expectedName = pm.environment.get(\"list_name\") + \"_updated\";\r",
+                  "\r",
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Check list name is updated\", function () {\r",
+                  "    pm.expect(body.name).to.eql(expectedName);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "content-type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_api_key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "\n{\n  \"name\": \"{{list_name}}_updated\"\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{clickup_base_url}}/list/{{list_id}}",
+              "host": [
+                "{{clickup_base_url}}"
+              ],
+              "path": [
+                "list",
+                "{{list_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update List (req field missing)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});//400 expected, but got 200"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{auth_api_key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n{\r\n  \r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{clickup_base_url}}/list/{{list_id}}",
+              "host": [
+                "{{clickup_base_url}}"
+              ],
+              "path": [
+                "list",
+                "{{list_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update List (invalid list_id)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 404\", function () {\r",
+                  "    pm.response.to.have.status(404);\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{auth_api_key}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n{\r\n  \"name\": \"{{list_name}}_updated\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{clickup_base_url}}/list/{{invalid_list_id}}",
+              "host": [
+                "{{clickup_base_url}}"
+              ],
+              "path": [
+                "list",
+                "{{invalid_list_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update List (invalid auth_api_token)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.request.headers.upsert({\r",
+                  "    key: \"Authorization\",\r",
+                  "    value: \"pk_\" + Date.now()\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const body = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Status code is 401\", function () {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Token invalid err\", function () {\r",
+                  "    pm.expect(body.err).to.eql(\"Token invalid\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "\r\n{\r\n  \"name\": \"{{list_name}}_updated\"\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{clickup_base_url}}/list/{{list_id}}",
+              "host": [
+                "{{clickup_base_url}}"
+              ],
+              "path": [
+                "list",
+                "{{list_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete List",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "{{auth_api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{clickup_base_url}}/list/{{list_id}}",
+              "host": [
+                "{{clickup_base_url}}"
+              ],
+              "path": [
+                "list",
+                "{{list_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete deleted List",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});//404 expected, but got 200"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{auth_api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{clickup_base_url}}/list/{{list_id}}",
+              "host": [
+                "{{clickup_base_url}}"
+              ],
+              "path": [
+                "list",
+                "{{list_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete List (invalid list_id)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 401\", function () {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{auth_api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{clickup_base_url}}/list/{{invalid_list_id}}",
+              "host": [
+                "{{clickup_base_url}}"
+              ],
+              "path": [
+                "list",
+                "{{invalid_list_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete List (invalid auth_api_token)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "pm.request.headers.upsert({\r",
+                  "    key: \"Authorization\",\r",
+                  "    value: \"pk_\" + Date.now()\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const body = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Status code is 401\", function () {\r",
+                  "    pm.response.to.have.status(401);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Token invalid err\", function () {\r",
+                  "    pm.expect(body.err).to.eql(\"Token invalid\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{clickup_base_url}}/list/{{list_id}}",
+              "host": [
+                "{{clickup_base_url}}"
+              ],
+              "path": [
+                "list",
+                "{{list_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get deleted list",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});//404 expected, but got 200\r",
+                  "\r",
+                  "pm.environment.unset(\"invalid_folder_id\");\r",
+                  "pm.environment.unset(\"list_name\");\r",
+                  "pm.environment.unset(\"invalid_list_id\");"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{auth_api_key}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{clickup_base_url}}/list/{{list_id}}",
+              "host": [
+                "{{clickup_base_url}}"
+              ],
+              "path": [
+                "list",
+                "{{list_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "auth": {
+        "type": "apikey"
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "list_id",
+      "value": ""
+    },
+    {
+      "key": "list_name",
+      "value": ""
+    }
+  ]
+}
