@@ -207,7 +207,7 @@
                       "    pm.expect(body.name).to.eql(expectedName);\r",
                       "});\r",
                       "\r",
-                      "pm.collectionVariables.set(\"list_id\", body.id)\r",
+                      "pm.environment.set(\"list_id\", body.id)\r",
                       "\r",
                       "pm.test(\"Response schema is valid\", function () {\r",
                       "    const schema = {\r",
@@ -458,7 +458,7 @@
                   "script": {
                     "exec": [
                       "const listName = \"test_list_\" + Date.now();\r",
-                      "pm.collectionVariables.set(\"list_name_hw5\", listName);\r",
+                      "pm.environment.set(\"list_name_hw5\", listName);\r",
                       "\r",
                       "\r",
                       "const response = await pm.sendRequest({\r",
@@ -468,9 +468,13 @@
                       "        Authorization: pm.environment.get(\"auth_api_key\")\r",
                       "    },\r",
                       "    body: JSON.stringify({\r",
-                      "        name: pm.collectionVariables.get(\"list_name_hw5\")\r",
+                      "        name: pm.environment.get(\"list_name_hw5\")\r",
                       "    })\r",
-                      "});"
+                      "});\r",
+                      "\r",
+                      "pm.environment.unset(\"list_name\")\r",
+                      "pm.environment.unset(\"list_name_hw5\")\r",
+                      "pm.environment.unset(\"list_id\")"
                     ],
                     "type": "text/javascript",
                     "packages": {},
@@ -488,13 +492,13 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{clickup_base_url}}/list/{{list_id_hw5}}",
+                  "raw": "{{clickup_base_url}}/list/{{list_id}}",
                   "host": [
                     "{{clickup_base_url}}"
                   ],
                   "path": [
                     "list",
-                    "{{list_id_hw5}}"
+                    "{{list_id}}"
                   ]
                 }
               },
@@ -2348,14 +2352,6 @@
     },
     {
       "key": "list_name",
-      "value": ""
-    },
-    {
-      "key": "list_id_hw5",
-      "value": ""
-    },
-    {
-      "key": "list_name_hw5",
       "value": ""
     }
   ]
