@@ -11,10 +11,10 @@ describe('Update Goal ClickUP endpoint', () => {
         const postPayload = payloads.validGoalPayload();
         const putPayload = payloads.validGoalPayload();
 
-        cy.env(['teamId']).then(({teamId}) => {
+        cy.env(['teamId', 'validToken']).then(({teamId, validToken}) => {
 
-            // CREATE
-            cy.sendRequest('POST', `/team/${teamId}/goal`, postPayload)
+            //CREATE
+            cy.sendRequest('POST', `/team/${teamId}/goal`, postPayload, validToken)
                 .then((response) => {
 
                     expect(response.status).to.eq(200);
@@ -23,24 +23,18 @@ describe('Update Goal ClickUP endpoint', () => {
                     goalId = response.body.goal.id;
                     expect(goalId).to.exist;
 
-                    // UPDATE
-                    return cy.sendRequest('PUT', `/goal/${goalId}`, putPayload);
+                    //UPDATE
+                    return cy.sendRequest('PUT', `/goal/${goalId}`, putPayload, validToken);
                 })
+
                 .then((response) => {
 
                     expect(response.status).to.eq(200);
                     expect(response.body).to.have.property('goal');
+                    expect(response.body.goal.id).to.eq(goalId);
 
-                    const updatedGoal = response.body.goal;
-
-                    expect(updatedGoal.id).to.eq(goalId);
-                    expect(updatedGoal.name).to.eq(putPayload.name);
-                    expect(updatedGoal.description).to.eq(putPayload.description);
-                    expect(updatedGoal.color).to.eq(putPayload.color);
-                    expect(updatedGoal.due_date).to.eq(String(putPayload.due_date));
-
-                    // GET
-                    return cy.sendRequest('GET', `/team/${teamId}/goal`);
+                    //GET
+                    return cy.sendRequest('GET', `/team/${teamId}/goal`, null, validToken);
                 })
 
                 .then((response) => {
@@ -57,8 +51,7 @@ describe('Update Goal ClickUP endpoint', () => {
                     expect(updatedGoal.color).to.eq(putPayload.color);
                     expect(updatedGoal.due_date).to.eq(String(putPayload.due_date));
 
-                    // DELETE
-                    return cy.sendRequest('DELETE', `/goal/${goalId}`);
+                    return cy.sendRequest('DELETE', `/goal/${goalId}`, null, validToken);
                 })
 
                 .then((response) => {

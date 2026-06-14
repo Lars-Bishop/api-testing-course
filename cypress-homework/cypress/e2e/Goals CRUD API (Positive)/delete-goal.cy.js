@@ -9,10 +9,10 @@ describe('Delete Goal ClickUP endpoint', () => {
         let goalId;
         const payload = payloads.validGoalPayload();
 
-        cy.env(['teamId']).then(({ teamId }) => {
+        cy.env(['teamId', 'validToken']).then(({teamId, validToken}) => {
 
             // CREATE
-            cy.sendRequest('POST', `/team/${teamId}/goal`, payload)
+            cy.sendRequest('POST', `/team/${teamId}/goal`, payload, validToken)
                 .then((response) => {
                     expect(response.status).to.eq(200);
 
@@ -20,13 +20,13 @@ describe('Delete Goal ClickUP endpoint', () => {
                     expect(goalId).to.exist;
 
                     // DELETE
-                    return cy.sendRequest('DELETE', `/goal/${goalId}`);
+                    return cy.sendRequest('DELETE', `/goal/${goalId}`, null, validToken);
                 })
                 .then((response) => {
                     expect(response.status).to.eq(200);
                     expect(response.body).to.deep.equal({});
 
-                    return cy.sendRequest('GET', `/goal/${goalId}`);
+                    return cy.sendRequest('GET', `/goal/${goalId}`, null, validToken);
                 })
                 .then((response) => {
                     expect(response.status).to.eq(404);
@@ -34,7 +34,6 @@ describe('Delete Goal ClickUP endpoint', () => {
                     expect(response.body).to.have.property('err');
                     expect(response.body.err).to.eq('Goal Not Found');
                 });
-
         });
     });
 });

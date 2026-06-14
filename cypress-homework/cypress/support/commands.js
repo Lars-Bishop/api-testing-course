@@ -1,11 +1,11 @@
-Cypress.Commands.add('sendRequest', (type, endpoint, payload)=>{
+Cypress.Commands.add('sendRequest', (type, endpoint, payload = null, token)=>{
     cy.request({
         method: type,
         url: endpoint,
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'Authorization': 'pk_296698589_LLL3L6732YNOSAX3ANMM89RNVYPHSRBC'
+            'Authorization': token
         },
         body: payload,
         failOnStatusCode: false

@@ -1,20 +1,25 @@
 /// <reference types="cypress" />
 
+const payloads = require('../../support/payloads');
 
 describe('Get Goals ClickUP endpoint', () => {
 
-    it('Send get request to Goals, returns 200', () => {
-        cy.request({
-            method: 'GET',
-            url: 'https://api.clickup.com/api/v2/team/90121739308/goal',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': 'pk_296698589_LLL3L6732YNOSAX3ANMM89RNVYPHSRBC'
-            }
-        })
-    })
-})
+    it('GET Goals with invalid teamId, returns 401', () => {
 
-//team_id - 90121739308
-//auth_key - pk_296698589_LLL3L6732YNOSAX3ANMM89RNVYPHSRBC
+        const invalidTeamId = payloads.invalidTeamId();
+
+        cy.env(['validToken']).then(({validToken}) => {
+
+            cy.sendRequest('GET', `/team/${invalidTeamId}/goal`, null, validToken)
+                .then((response) => {
+                    expect(response.status).to.eq(401);
+
+                    expect(response.body).to.have.property('err');
+                    expect(response.body.err).to.eq('Workspace not authorized');
+
+                    expect(response.body).to.have.property('ECODE');
+                    expect(response.body.ECODE).to.eq('OAUTH_192');
+                });
+        });
+    });
+});
