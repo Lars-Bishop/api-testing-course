@@ -1,7 +1,7 @@
 const { defineConfig } = require("cypress");
 
 module.exports = defineConfig({
-  allowCypressEnv: false,
+  allowCypressEnv: true,
 
   e2e: {
     setupNodeEvents(on, config) {
@@ -9,7 +9,8 @@ module.exports = defineConfig({
     },
       baseUrl: 'https://api.clickup.com/api/v2',
       env: {
-        token: 'pk_296698589_LLL3L6732YNOSAX3ANMM89RNVYPHSRBC'
+        token: 'pk_296698589_LLL3L6732YNOSAX3ANMM89RNVYPHSRBC',
+        teamId: '90121739308'
       }
   },
 });
