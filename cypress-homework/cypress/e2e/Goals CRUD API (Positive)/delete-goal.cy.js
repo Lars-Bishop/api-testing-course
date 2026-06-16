@@ -11,7 +11,7 @@ describe('Delete Goal ClickUP endpoint', () => {
 
         cy.env(['teamId', 'validToken']).then(({teamId, validToken}) => {
 
-            // CREATE
+            //CREATE
             cy.sendRequest('POST', `/team/${teamId}/goal`, payload, validToken)
                 .then((response) => {
                     expect(response.status).to.eq(200);
@@ -19,7 +19,7 @@ describe('Delete Goal ClickUP endpoint', () => {
                     goalId = response.body.goal.id;
                     expect(goalId).to.exist;
 
-                    // DELETE
+                    //DELETE
                     return cy.sendRequest('DELETE', `/goal/${goalId}`, null, validToken);
                 })
                 .then((response) => {

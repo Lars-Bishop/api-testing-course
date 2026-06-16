@@ -51,6 +51,7 @@ describe('Update Goal ClickUP endpoint', () => {
                     expect(updatedGoal.color).to.eq(putPayload.color);
                     expect(updatedGoal.due_date).to.eq(String(putPayload.due_date));
 
+                    //DELETE
                     return cy.sendRequest('DELETE', `/goal/${goalId}`, null, validToken);
                 })
 

@@ -38,6 +38,7 @@ describe('Get Goal ClickUP endpoint', () => {
                     expect(goal.color).to.eq(payload.color);
                     expect(goal.due_date).to.eq(String(payload.due_date));
 
+                    //DELETE
                     return cy.sendRequest('DELETE', `/goal/${goalId}`, null, validToken);
                 })
 

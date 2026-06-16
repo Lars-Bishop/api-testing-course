@@ -11,7 +11,7 @@ describe('Create Goal ClickUP endpoint', () => {
 
         cy.env(['teamId', 'validToken']).then(({teamId, validToken}) => {
 
-            // CREATE
+            //CREATE
             cy.sendRequest('POST', `/team/${teamId}/goal`, payload, validToken)
                 .then((response) => {
 
@@ -26,7 +26,7 @@ describe('Create Goal ClickUP endpoint', () => {
                     expect(response.body.goal.color).to.eq(payload.color);
                     expect(response.body.goal.due_date).to.eq(String(payload.due_date));
 
-                    // DELETE
+                    //DELETE
                     return cy.sendRequest('DELETE', `/goal/${goalId}`, null, validToken);
                 })
                 .then((response) => {
