@@ -1,23 +1,30 @@
-import requests
+from utils.payloads import valid_goal_payload
+from utils.requests_helper import send_request
 
-headers_variable = {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'Authorization': 'pk_296698589_LLL3L6732YNOSAX3ANMM89RNVYPHSRBC '
-}
 
-def test_post_goal():
-    response = requests.post('https://api.clickup.com/api/v2/team/90121739308/goal', headers=headers_variable, json={"name": "test1", "due_date": "1568036964079", "description": "test1test1", "multiple_owners": "true", "color": "#2b5c3d"})
+def test_get_goal(team_id, valid_token):
+
+    payload = valid_goal_payload()
+
+    #CREATE
+    response = send_request("POST", f"/team/{team_id}/goal", valid_token, payload)
     assert response.status_code == 200
+    goal_id = response.json()["goal"]["id"]
+    assert goal_id is not None
 
-
-def test_get_goal():
-    response = requests.get('https://api.clickup.com/api/v2/team/90121739308/goal', headers=headers_variable)
+    #GET
+    response = send_request("GET", f"/goal/{goal_id}", valid_token)
     assert response.status_code == 200
+    body = response.json()
+    assert "goal" in body
+    goal = body["goal"]
+    assert goal["id"] == goal_id
+    assert goal["name"] == payload["name"]
+    assert goal["description"] == payload["description"]
+    assert goal["color"] == payload["color"]
+    assert goal["due_date"] == str(payload["due_date"])
 
-    
-def test_delete_goal():
-    response = requests.get('https://api.clickup.com/api/v2/team/90121739308/goal', headers=headers_variable)
+    #DELETE
+    response = send_request("DELETE", f"/goal/{goal_id}", valid_token)
+
     assert response.status_code == 200
-
-
