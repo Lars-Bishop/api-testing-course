@@ -9,17 +9,19 @@ jobs:
       - checkout
 
       - run:
-          name: Install dependencies
+          name: install dependencies
           command: |
+            cd python-homework
             pip install -r requirements.txt
 
       - run:
-          name: Run tests
+          name: run tests
           command: |
+            cd python-homework
             pytest --template=html1/index.html --report=report.html
 
       - store_artifacts:
-          path: report.html
+          path: python-homework/report.html
           destination: python-report
 
 workflows:
