@@ -34,7 +34,7 @@ def test_update_goal_with_invalid_goal_id(valid_token):
     assert response.status_code == 404
     body = response.json()
     assert "err" in body
-    assert body["err"] == "Goal Not Found"
+    assert body["err"] == "Goal not found"
 
 
 def test_update_goal_with_invalid_auth_api_key(team_id, valid_token, invalid_token):
