@@ -29,7 +29,7 @@ jobs:
 
   cypress-tests:
     docker:
-      - image: cimg/node:20.18
+      - image: cypress/included:15.7.0
 
     steps:
       - checkout
@@ -44,7 +44,7 @@ jobs:
           name: Run Cypress tests
           command: |
             cd cypress-homework
-            npx cypress run
+            cypress run
 
   postman-tests:
     docker:
