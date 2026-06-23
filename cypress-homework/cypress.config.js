@@ -9,9 +9,9 @@ module.exports = defineConfig({
     },
       baseUrl: 'https://api.clickup.com/api/v2',
       env: {
-        validToken: 'pk_302572542_Y5JTCAMFUC6GRCO0LHGSGGJQWJGTN0UR',
+        validToken: 'pk_302572951_J1BQGT89EPXZE9UR13X0HATF7T5IETGH',
         invalidToken: 'pk_blablablaImInvalidSowhat',
-        teamId: '90121848771'
+        teamId: '90121849074'
       }
   },
 });
