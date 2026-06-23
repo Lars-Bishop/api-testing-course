@@ -1,30 +1,64 @@
 version: 2.1
 
 jobs:
-  python-job:
+
+  python-tests:
     docker:
-      - image: circleci/python:3.10.1-node-browsers
+      - image: cimg/python:3.10
 
     steps:
       - checkout
 
       - run:
-          name: install dependencies
+          name: Install Python dependencies
           command: |
             cd python-homework
             pip install -r requirements.txt
 
       - run:
-          name: run tests
+          name: Run Python tests
           command: |
             cd python-homework
-            pytest --template=html1/index.html --report=report.html
+            pytest
 
-      - store_artifacts:
-          path: python-homework/report.html
-          destination: python-report
+
+  cypress-tests:
+    docker:
+      - image: cypress/browsers:node-18.12.0-chrome-107
+
+    steps:
+      - checkout
+
+      - run:
+          name: Install Cypress dependencies
+          command: |
+            cd cypress-homework
+            npm install
+
+      - run:
+          name: Run Cypress tests
+          command: |
+            cd cypress-homework
+            npx cypress run
+
+
+  postman-tests:
+    docker:
+      - image: postman/newman:alpine
+
+    steps:
+      - checkout
+
+      - run:
+          name: Run Postman collection
+          command: |
+            newman run "ClickUp API.postman_collection.json" \
+            -e "ClickUp Main.postman_environment.json"
+
 
 workflows:
   build-and-test:
     jobs:
-      - python-job
+      - python-tests
+      - cypress-tests
+      - postman-tests
