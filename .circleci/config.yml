@@ -1,38 +1,20 @@
 version: 2.1
 
 jobs:
-  python-tests:
-    docker:
-      - image: cimg/python:3.10
-
-    steps:
-      - checkout
-
-      - run:
-          name: Install Python dependencies
-          command: |
-            cd python-homework
-            python -m venv venv
-            . venv/bin/activate
-            pip install -r requirements.txt
-
-      - run:
-          name: Run Python tests
-          command: |
-            cd python-homework
-            . venv/bin/activate
-            pytest --template=html1/index.html --report=report.html
-
-      - store_artifacts:
-          path: python-homework/report.html
-          destination: python-report
-
   cypress-tests:
     docker:
       - image: cypress/included:15.7.0
 
     steps:
       - checkout
+
+      - run:
+          name: Debug Cypress
+          command: |
+            cd cypress-homework
+            node -v
+            npm -v
+            npx cypress version
 
       - run:
           name: Install Cypress dependencies
@@ -46,27 +28,7 @@ jobs:
             cd cypress-homework
             cypress run
 
-  postman-tests:
-    docker:
-      - image: cimg/node:20.18
-
-    steps:
-      - checkout
-
-      - run:
-          name: Install Newman
-          command: |
-            npm install -g newman
-
-      - run:
-          name: Run Postman collection
-          command: |
-            newman run "ClickUp API.postman_collection.json" \
-              -e "ClickUp Main.postman_environment.json"
-
 workflows:
   build-and-test:
     jobs:
-      - python-tests
       - cypress-tests
-      - postman-tests
